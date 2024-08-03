@@ -135,7 +135,7 @@ function SetEanEncode (Ldat: string[]) {
                 }
             }
         }
-        if (value.length > 4) {
+        if (value.length > 5) {
             I += 1
         }
         J += 1
@@ -156,7 +156,7 @@ function DrawEanImage (Hight: number, EdgeWidth: number, Wcol: number, Bcol: num
         if (value.includes("-------")) {
             images.print(EanImage, LeanStr[Si], ImgWidthIdx + 1, Hight - 8, Bcol)
         } else {
-            if (value.length > 4) {
+            if (value.length > 5) {
                 for (let J = 0; J <= EanPattenDat[I].length - 1; J++) {
                     if (parseFloat(EanPattenDat[I].charAt(J)) > 0) {
                         EanImage.fillRect(ImgWidthIdx + J, 0, 1, Hight - 8, Bcol)
@@ -171,7 +171,7 @@ function DrawEanImage (Hight: number, EdgeWidth: number, Wcol: number, Bcol: num
                 }
             }
         }
-        if (value.length > 4) {
+        if (value.length > 5) {
             Si += 1
         }
         ImgWidthIdx += TempEanWidth[I]
@@ -216,7 +216,7 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 function SetupEan13Template () {
     TempEanWidth = [
     7,
-    4,
+    3,
     7,
     7,
     7,
@@ -230,25 +230,25 @@ function SetupEan13Template () {
     7,
     7,
     7,
-    4
+    3
     ]
     TempEanPatten = [
     "-------",
-    "0101",
+    "101",
     "0000000",
     "0000000",
     "0000000",
     "0000000",
     "0000000",
     "0000000",
-    "0101",
+    "01010",
     "0000000",
     "0000000",
     "0000000",
     "0000000",
     "0000000",
     "0000000",
-    "0101"
+    "101"
     ]
 }
 function SumTheNumList (NumLdat: any[]) {
