@@ -1,3 +1,6 @@
+namespace SpriteKind {
+    export const Barcode = SpriteKind.create()
+}
 function SetStrToList (Dat: string) {
     Ulist = []
     for (let I = 0; I <= Dat.length - 1; I++) {
@@ -28,11 +31,10 @@ function WriteAsciiLineSelector () {
 }
 spriteutils.createRenderable(0, function (screen2) {
     if (SetupDone) {
-        spriteutils.drawTransparentImage(DrawEanImage(60, 8, 1, scene.backgroundColor()), screen2, 0, 0)
         if (WritingBarcode) {
-            images.print(screen2, EanInput, Ix, Iy, 1)
-            images.print(screen2, WriteAsciiLineSelector(), Ix, Iy + 8, 1)
-            images.print(screen2, WriteAsciiLineSelector(), Ix, Iy - 8, 1)
+            images.printCenter(screen2, EanInput, Iy, 1)
+            images.printCenter(screen2, WriteAsciiLineSelector(), Iy + 8, 1)
+            images.printCenter(screen2, WriteAsciiLineSelector(), Iy - 8, 1)
         }
     }
 })
@@ -48,7 +50,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         }
         WritingBarcode = false
     } else {
-        if (WriteNumberStrToEan(convertToText(randint(1, 999999999999)))) {
+        if (WriteNumberStrToEan(GenerateEan13numText())) {
             SetEanEncode(LeanStr)
         }
     }
@@ -213,6 +215,13 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     }
     IdxInput = 0
 })
+function GenerateEan13numText () {
+    Txt = ""
+    for (let index = 0; index < 12; index++) {
+        Txt = "" + Txt + convertToText(randint(0, 9))
+    }
+    return Txt
+}
 function SetupEan13Template () {
     TempEanWidth = [
     7,
@@ -333,6 +342,8 @@ function WriteInput (SumUp: boolean, Min: number, Max: number) {
     }
     EanInput = Str
 }
+let BarcodeSprite: Sprite = null
+let Txt = ""
 let EanBGimage: Image = null
 let ImgWidthIdx = 0
 let Si = 0
@@ -364,15 +375,41 @@ let Lodd: string[] = []
 let Ulist: string[] = []
 let LeanStr: string[] = []
 let Iy = 0
-let Ix = 0
 let SetupDone = false
 let WritingBarcode = false
 Setup()
 WritingBarcode = false
 SetupDone = true
-Ix = 0
+let Ix = 0
 Iy = scene.screenHeight() - 30
 scene.setBackgroundColor(15)
-if (WriteNumberStrToEan(convertToText(randint(1, 999999999999)))) {
+if (WriteNumberStrToEan(GenerateEan13numText())) {
     SetEanEncode(LeanStr)
 }
+game.onUpdate(function () {
+    if (SetupDone) {
+        if (!(BarcodeSprite)) {
+            BarcodeSprite = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, SpriteKind.Barcode)
+        }
+        BarcodeSprite.setImage(DrawEanImage(60, 8, 1, scene.backgroundColor()))
+        BarcodeSprite.x = scene.screenWidth() / 2
+        BarcodeSprite.top = 0
+    }
+})
